@@ -1,1 +1,1 @@
-web: gunicorn -k uvicorn.workers.UvicornWorker mysite.asgi
+web: daphne mysite.asgi:application --port $PORT --bind 0.0.0.0 -v2
