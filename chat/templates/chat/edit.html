@@ -1,0 +1,12 @@
+<a href="{% url 'main_view' %}">Назад</a></li>
+
+{% block content %}
+    <h1>Редактирование аккаунта</h1>
+    <p>Вы можете редактировать ваш аккаунт, используя следующую форму:</p>
+    <form action="." method="post" enctype="multipart/form-data">
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="Сохранить изменения"></p>
+    </form>
+{% endblock %}

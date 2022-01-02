@@ -1,0 +1,11 @@
+<a href="{% url 'main_view' %}">Назад</a></li>
+{% block content %}
+    <h1>Создать аккаунт</h1>
+    <p>При регистрации будет сохранен ваш IP</p>
+    <p>Пожалуйста, заполните следующую форму:</p>
+    <form action="." method="post">
+        {{ user_form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" value="Создать аккаунт"></p>
+    </form>
+{% endblock %}

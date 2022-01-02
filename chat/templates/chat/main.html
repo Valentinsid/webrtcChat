@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Видеочат WebRTC</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+  
+</head>
+<body>
+    <li><a href="{% url 'main_view' %}">Главная</a></li>
+
+
+
+  
+
+  {% if user.is_authenticated %}
+     <li>Пользователь: {{ user.get_username }}</li>
+   {% else %}
+     <li><a href="{% url 'login'%}?next={{request.path}}">Логин</a></li>
+   {% endif %} 
+  
+  {% if not user.is_superuser %}
+  <li><a href="{% url 'edit' %}">Редактировать профиль</a></li>
+  
+  {% endif %}
+  <li><a href="{% url 'logout'%}?next={{request.path}}">Выход</a></li>
+  {% if user.profile.first == True and user.profile.is_ip_correct %} 
+<h3 id="label-room">Введите / сгенерируйте номер комнаты</h3>
+<div id = 'roomcheck-container'>
+<input id='room'>
+<button id="btn-generateRoom">Сгенерировать</button>
+
+<button id="btn-checkRoom">Проверить комнату</button>
+</div>
+<h3 id="label-room">Введите пароль от комнаты</h3>
+<div>
+<input id='room-pass'>
+</div>
+<h3 id="label-username" hidden>{{ user.get_username }}</h3>
+<div>
+  <input id="username" hidden><button id="btn-join">Войти в комнату</button>
+  <button id="btn-disconnect" style="visibility: hidden;">Выйти из комнаты</button>
+</div>
+<div id = "label-admin">
+</div>
+<div class="main-grid-container">
+  <div id="video-container">
+    <div><video id="local-video" style="float: left;" autoplay playsinline></video></div>
+    <button id="btn-toggle-audio">Выключить аудио</button>
+    <button id="btn-toggle-video">Выключить видео</button>
+  </div>
+
+<div id="chat">
+  <h3>Чат</h3>
+  <div id="messages">
+    <ul id="message-list"></ul>
+  </div>
+  <div><input id="msg"><button id="btn-send-msg">Отправить сообщение</button></div>
+<div><button id="btn-share-screen">Демонстрация экрана</button></div>
+<div><button id="btn-stopshare-screen">Отключить демонстрацию экрана</button></div>
+</div>
+
+</div>
+  
+  <div id="select-file-dialog">
+  <div id="dialog-content">
+    <div id="select-file">
+      <div id="label">Выберите файл:</div>
+      <input type="file" id="select-file-input">
+    </div>
+    <div id="dialog-footer">
+      <button id="ok-button">Ок</button>
+      <button id="cancel-button" class="cancel-button">Отмена</button>
+    </div>
+  </div>
+</div>
+{% else %}
+<p>Ваш IP-адрес не совпадает с указанным в профиле. Для того, чтобы получить доступ к странице, перейдите по ссылке, отправленной вам на почту.</p>
+
+
+{% endif %}
+<script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
