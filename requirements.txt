@@ -10,6 +10,8 @@ Automat==20.2.0
 cffi==1.15.0
 channels==3.0.4
 charset-normalizer==2.0.9
+click==8.0.3
+colorama==0.4.4
 constantly==15.1.0
 cryptography==36.0.0
 daphne==3.0.2
@@ -45,5 +47,6 @@ Twisted==21.7.0
 txaio==21.2.1
 typing_extensions==4.0.0
 unpaddedbase64==2.1.0
+uvicorn==0.16.0
 yarl==1.7.2
 zope.interface==5.4.0
