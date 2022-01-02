@@ -50,3 +50,5 @@ unpaddedbase64==2.1.0
 uvicorn==0.16.0
 yarl==1.7.2
 zope.interface==5.4.0
+dj-database-url 
+psycopg2
