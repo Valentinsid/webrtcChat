@@ -1,1 +1,1 @@
-web: gunicorn mysite.asgi
+web: gunicorn -k uvicorn.workers.UvicornWorker mysite.asgi
