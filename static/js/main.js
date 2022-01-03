@@ -504,7 +504,7 @@ let configuration = {
 }
 sendSignal('check-admin', {}, room, roomPass, peerUsername);
 
-var peer = new RTCPeerConnection(null);
+var peer = new RTCPeerConnection(configuration);
 addLocalTracks(peer);
 console.log("createOfferer");
 var dc = peer.createDataChannel('channel');
@@ -749,7 +749,7 @@ let configuration = {
   }
   ]
 }  
-var peer = new RTCPeerConnection(null);
+var peer = new RTCPeerConnection(configuration);
 addLocalTracks(peer);
 console.log("createAnswerer");
 sendSignal('check-admin', {}, room, roomPass, username);
