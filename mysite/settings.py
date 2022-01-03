@@ -122,30 +122,55 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 ASGI_APPLICATION = 'mysite.asgi.application'
 
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
+
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+        "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    },
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        "OPTIONS": {
+        "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+    },
+}
+
 
 LOGIN_REDIRECT_URL = 'check_ip'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-DEFAULT_FROM_EMAIL = 'valentinsid@gmail.com'
-SERVER_EMAIL = 'valentinsid@gmail.com'
+DEFAULT_FROM_EMAIL = 'webrtcchatvkb@gmail.com'
+SERVER_EMAIL = 'webrtcchatvkb@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'valentinsid@gmail.com'
-EMAIL_HOST_PASSWORD = '300188aA'
+EMAIL_HOST_USER = 'webrtcchatvkb@gmail.com'
+EMAIL_HOST_PASSWORD = 'fordiplomavkb'
 
 if 'DATABASE_URL' in os.environ:
     import dj_database_url
     DATABASES = {'default': dj_database_url.config()}
+
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379    
