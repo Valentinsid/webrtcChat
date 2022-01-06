@@ -79,6 +79,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 print("Комната добавлена") 
                 roomsDict[room] = roomPass
 
+           
+
 
         if (action == 'kick'):
             username = message['peer']
@@ -87,6 +89,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 kickedRoom[room].append(username)
             except KeyError:
                 kickedRoom[room] = [username]
+
+            await self.channel_layer.send(
+                        list(usersChannels.keys())[list(usersChannels.values()).index(username)],
+                        {
+                            'type': 'channel_message',
+                            'action': 'kick',
+                            'room': 'room',
+                            'message': { username: '1'},
+                        }
+                    )     
 
             print(kickedRoom)                
 
@@ -333,6 +345,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             print('SDP отправлено')
 
         usersChannels[self.channel_name] = username
+
+
+        if (action == 'onhold'):
+            print(message['peer'], list(usersChannels.keys())[list(usersChannels.values()).index(message['peer'])])
+            await self.channel_layer.send(
+                        list(usersChannels.keys())[list(usersChannels.values()).index(message['peer'])],
+                        {
+                            'type': 'channel_message',
+                            'action': 'onhold',
+                            'room': 'room',
+                            'message': { message['peer']: '1'},
+                        }
+                    ) 
 
         if(action != 'check-admin'):
             if objectsInRoom.get(room) == None:
