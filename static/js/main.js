@@ -100,6 +100,16 @@ return;
 }
 // console.log("Сообщение от вебсокет 2");
 var receiver_channel_name = parsedData['message']['receiver_channel_name']
+if (action == 'onhold') {
+  result = parsedData['message'];
+  console.log(result);
+  alert("Вы были поставлены на ожидание. Ожидайте приглашения");
+}
+if (action == 'kick') {
+  result = parsedData['message'];
+  console.log(result);
+  alert("Вы были исключены из комнаты. Больше вы не можете туда вернуться");
+}
 if(action == 'check-admin'){
   result = parsedData['message'];
   // var kickBtn;
@@ -203,9 +213,16 @@ return;
 if(action == 'new-answer'){
 var answer = parsedData['message']['sdp'];
 // console.log("new-answer");
+try{
 var peer = mapPeers[peerUsername][0];
 peer.setRemoteDescription(answer);
 return;
+}
+catch (e){
+  console.log(e);
+return;
+}
+
 }
 if(action == 'check-room'){
   // console.log("Проверка комнаты и сообщение: ", parsedData['message']);
@@ -247,12 +264,15 @@ if(action == 'disconnect'){
     clientInfo = [];
     curAdmin = "";
   }
+  console.log(parsedData['peer']);
+  if(parsedData['peer'] == undefined){
   for (const [key, value] of Object.entries(mapPeers)) {
   // console.log(key, value[0]);
   value[0].close();
   value[1].close();
   // console.log(value[0].iceConnectionState);
   };
+};
   console.log(parsedData['peer']);
   try {
     if(parsedData['peer'] == undefined) {
@@ -1179,6 +1199,8 @@ try {
     if(username == curAdmin){
       console.log('hold by admin');
       for (const [key, value] of Object.entries(mapPeers)) {
+        console.log(mapChannel[usernameToHold]);
+        sendSignal('onhold', {'peer':usernameToHold}, room, '0');
         if(usernameToHold == key){
 
           mapPeers[key][0].close();
@@ -1215,29 +1237,42 @@ dataChannels[index].send(message);
 messageInput.value = '';
 }
 document.getElementById('btn-share-screen').addEventListener('click', async () => {
+ console.log("Кнопку нажали"); 
 if (!displayMediaStream) {
 displayMediaStream = await navigator.mediaDevices.getDisplayMedia();
+console.log("2221");
 }
 console.log(displayMediaStream.getTracks());
+console.log(mapPeers);
 for (const [key, value] of Object.entries(mapPeers)) {
 //mapVideo[value[0]] =
 console.log(key, value[0], value[1]);
+console.log(value[0].getSenders().find(sender =>
+sender.track.kind === 'video'));
 value[0].getSenders().find(sender =>
 sender.track.kind === 'video').replaceTrack(displayMediaStream.getTracks()[0]);
+console.log("REPLACED!");
 };
 
 //mapPeers.forEach(element => element[0].replaceTrack(displayMediaStream.getTracks()[0]));
 //mapPeers.forEach(element => element[0].replaceTrack(displayMediaStream.getTracks()[0]));
 //senders.find(sender => sender.track.kind === 'video').replaceTrack(displayMediaStream.getTracks()[0]);
 //show what you are showing in your "self-view" video.
+console.log(document.getElementById('local-video').srcObject);
 document.getElementById('local-video').srcObject = displayMediaStream;
 //hide the share button and display the "stop-sharing" one
+console.log(document.getElementById('local-video').srcObject);
+
 document.getElementById('btn-share-screen').style.display = 'none';
 document.getElementById('btn-stopshare-screen').style.display = 'inline';
 });
 document.getElementById('btn-stopshare-screen').addEventListener('click', async (event) => {
+  displayMediaStream = false;
+  console.log(document.getElementById('local-video').srcObject);
 for (const [key, value] of Object.entries(mapPeers)) {
 console.log(mapVideo[value[0]].getTracks()[1]);
+console.log(value[0].getSenders().find(sender =>
+sender.track.kind === 'video'), mapVideo[value[0]].getTracks().find(track => track.kind === 'video'));
 value[0].getSenders().find(sender =>
 sender.track.kind === 'video').replaceTrack(mapVideo[value[0]].getTracks().find(track => track.kind === 'video'));
 };
@@ -1245,6 +1280,7 @@ sender.track.kind === 'video').replaceTrack(mapVideo[value[0]].getTracks().find(
 //    senders.find(sender => sender.track.kind === 'video')
 //      .replaceTrack(userMedia.getTracks().find(track => track.kind === 'video'));
 document.getElementById('local-video').srcObject = localStream;
+console.log(document.getElementById('local-video').srcObject);
 document.getElementById('btn-share-screen').style.display = 'inline';
 document.getElementById('btn-stopshare-screen').style.display = 'none';
 });
