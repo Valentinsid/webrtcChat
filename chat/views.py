@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.contrib import messages
 
 
 # def index(request):
@@ -123,7 +123,7 @@ def login(request):
             return render(request, 'chat/main.html', context={'user':user})
         else:
             messages.error(request,'username or password not correct')
-            return render(request, 'chat/main.html', context={'user':user})
+            return render(request, 'chat/incorrect_user.html', context={'user':user})
         
                 
     else:
@@ -161,6 +161,25 @@ def activate(request, uidb64, token):
     else:
         return render(request, 'chat/main.html', context={'user':user})
 
+def activate2(request, uidb64, token):
+    print("ACTIVATE2")
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+        print(uid, user)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        print(user.profile.ice_candidates, user.profile.ice_candidates_temp)
+        user.profile.ice_candidates = user.profile.ice_candidates_temp
+        print(user.profile.ice_candidates, user.profile.ice_candidates_temp)
+        
+        user.profile.save()
+        print(user.profile.ice_candidates, user.profile.ice_candidates_temp)
+        # return redirect('home')
+        return render(request, 'chat/ice_activated.html', context={'user':user})
+    else:
+        return render(request, 'chat/main.html', context={'user':user})
 
 from .forms import UserRegistrationForm, UserEditForm, ProfileEditForm
 

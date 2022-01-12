@@ -12,7 +12,12 @@ class Profile(models.Model):
     ip_address = models.GenericIPAddressField(protocol='IPv4', default="11.11.11.11")
     port = models.IntegerField(default = 0)
     is_ip_correct = models.BooleanField(default = True)
+    ice_candidates = models.TextField(default = 0)
     first = models.BooleanField(default = False)
+    first_ice = models.BooleanField(default = True)
+    ice_candidates_temp = models.TextField(default = 0)
+
+
 
     # def save(self, *args, **kwargs):
     #     stun_info = stun.get_ip_info()
