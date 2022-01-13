@@ -52,7 +52,7 @@ if (btnCheckRoom) {
         if (loc.protocol == 'https:') {
             wsStart = 'wss://';
         }
-        console.log(loc.protocol);
+        console.log(wsStart, loc.protocol);
         var endPoint = wsStart + loc.host + loc.pathname;
         // console.log('endPoint: ', endPoint);
         if (connection == 0) {
@@ -84,9 +84,10 @@ if (btnSendSignal) {
         // var room = roomInput.value;
         var loc = window.location;
         var wsStart = 'ws://';
-        if (loc.protocol == 'https') {
+        if (loc.protocol == 'https:') {
             wsStart = 'wss://';
         }
+        console.log(wsStart, loc.protocol);
         var endPoint = wsStart + loc.host + loc.pathname;
         // console.log('endPoint: ', endPoint);
         if (connection == 0) {
@@ -471,9 +472,10 @@ btnJoin.addEventListener('click', () => {
     labelUsername.innerHTML = username;
     var loc = window.location;
     var wsStart = 'ws://';
-    if (loc.protocol == 'https') {
+    if (loc.protocol == 'https:') {
         wsStart = 'wss://';
     }
+    console.log(wsStart, loc.protocol);
     var endPoint = wsStart + loc.host + loc.pathname;
     // console.log('endPoint: ', endPoint);
 
