@@ -50,7 +50,7 @@ if (btnCheckRoom) {
         var loc = window.location;
         var wsStart = 'ws://';
         if (loc.protocol == 'https:') {
-            wsStart = 'wss://';
+            wsStart = 'ws://';
         }
         console.log(wsStart, loc.protocol);
         var endPoint = wsStart + loc.host + loc.pathname;
@@ -85,7 +85,7 @@ if (btnSendSignal) {
         var loc = window.location;
         var wsStart = 'ws://';
         if (loc.protocol == 'https:') {
-            wsStart = 'wss://';
+            wsStart = 'ws://';
         }
         console.log(wsStart, loc.protocol);
         var endPoint = wsStart + loc.host + loc.pathname;
@@ -473,7 +473,7 @@ btnJoin.addEventListener('click', () => {
     var loc = window.location;
     var wsStart = 'ws://';
     if (loc.protocol == 'https:') {
-        wsStart = 'wss://';
+        wsStart = 'ws://';
     }
     console.log(wsStart, loc.protocol);
     var endPoint = wsStart + loc.host + loc.pathname;
