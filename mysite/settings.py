@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ln(i$gpc!i9p671-w#%dz8=i#oxi)sr%)k597gbpn6$u)rej57
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['37.228.116.217', 'webrtcchatsid.ru', 'www.webrtcchatsid.ru']
 
 
 # Application definition
