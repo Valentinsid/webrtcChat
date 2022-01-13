@@ -83,7 +83,7 @@ if (btnSendSignal) {
     btnSendSignal.addEventListener('click', () => {
         // var room = roomInput.value;
         var loc = window.location;
-        var wsStart = 'wss://';
+        var wsStart = 'ws://';
         if (loc.protocol == 'https') {
             wsStart = 'wss://';
         }
@@ -470,7 +470,7 @@ btnJoin.addEventListener('click', () => {
     var labelUsername = document.querySelector('#label-username');
     labelUsername.innerHTML = username;
     var loc = window.location;
-    var wsStart = 'wss://';
+    var wsStart = 'ws://';
     if (loc.protocol == 'https') {
         wsStart = 'wss://';
     }
