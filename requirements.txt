@@ -61,3 +61,4 @@ yarl==1.7.2
 zope.interface==5.4.0
 dj-database-url 
 psycopg2
+psycopg2-binary
