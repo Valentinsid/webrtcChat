@@ -1,27 +1,5 @@
 from django.shortcuts import render
 from django.contrib import messages
-
-
-# def index(request):
-#     ...
-
-#     num_authors=Author.objects.count()  # The 'all()' is implied by default.
-
-#     # Number of visits to this view, as counted in the session variable.
-#     num_visits=request.session.get('num_visits', 0)
-#     request.session['num_visits'] = num_visits+1
-
-#     # Render the HTML template index.html with the data in the context variable.
-#     return render(
-#         request,
-#         'index.html',
-#         context={'num_books':num_books,'num_instances':num_instances,'num_instances_available':num_instances_available,'num_authors':num_authors,
-#             'num_visits':num_visits}, # num_visits appended
-#     )
-
-
-
-# Create your views here.
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm
 from .models import Profile
@@ -40,13 +18,12 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+
 @login_required
 def main_view(request):
-
     context = {}
     num_visits=request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits+1
-
     return render(request, 'chat/main.html', context={'num_visits':num_visits})
 
 
@@ -54,11 +31,8 @@ def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
-            # Create a new user object but avoid saving it yet
             new_user = user_form.save(commit=False)
-            # Set the chosen password
             new_user.set_password(user_form.cleaned_data['password'])
-            # Save the User object
             new_user.save()
             profile = Profile.objects.create(user=new_user)
             return render(request, 'chat/register_done.html', {'new_user': new_user})
@@ -78,7 +52,6 @@ def get_client_ip(request):
     return ip
 
 def login(request):
-
     if request.method == 'POST':
         form = AuthenticationForm(request.POST)
         username = request.POST['username']
@@ -86,16 +59,12 @@ def login(request):
         user = authenticate(username=username,password=password)
         if user:
             if user.profile.first == True:
-                print("user.profile.first == True")
                 print(get_client_ip(request), user.profile.ip_address, request.META['HTTP_USER_AGENT'])
                 if get_client_ip(request) == user.profile.ip_address:
-                    print('=')
                     user.profile.is_ip_correct = True
                 else:
-                    print('!=')
                     user.profile.is_ip_correct = False
                     current_site = get_current_site(request)
-                    print(current_site) 
                     mail_subject = 'Обновите ваш IP.'
                     message = render_to_string('chat/acc_active_email.html', {
                         'user': user,
@@ -103,7 +72,6 @@ def login(request):
                         'uid':urlsafe_base64_encode(force_bytes(user.pk)),
                         'token':account_activation_token.make_token(user),
                     })
-                
                     to_email = user.email
                     email = EmailMessage(
                                 mail_subject, message, to=[to_email]
@@ -111,72 +79,42 @@ def login(request):
                     email.content_subtype = 'html'
                     email.send()
             if user.profile.first == False:
-                print("user.profile.first == False")
                 user.profile.ip_address = get_client_ip(request)
                 user.profile.first = True
-
-
-            user.profile.save()
-            print(user.profile.first, user.profile.is_ip_correct)    
-                    
+            user.profile.save()                    
             auth_login(request,user)
             return render(request, 'chat/main.html', context={'user':user})
         else:
             messages.error(request,'username or password not correct')
             return render(request, 'chat/incorrect_user.html', context={'user':user})
-        
-                
     else:
         form = AuthenticationForm()
     return render(request,'registration/login.html',{'form':form})
-    
-
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
-
 
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-        print(uid, user)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        print(user.profile.is_ip_correct)
         user.profile.is_ip_correct = True
-        print(get_client_ip(request))
         user.profile.ip_address = get_client_ip(request)
-        print(user.profile.is_ip_correct)
         user.profile.save()
-        print(user.profile.is_ip_correct, user.profile)
         auth_login(request, user)
-        # return redirect('home')
         return render(request, 'chat/main.html', context={'user':user})
     else:
         return render(request, 'chat/main.html', context={'user':user})
 
-def activate2(request, uidb64, token):
-    print("ACTIVATE2")
+def activate_ice(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-        print(uid, user)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        print(user.profile.ice_candidates, user.profile.ice_candidates_temp)
-        user.profile.ice_candidates = user.profile.ice_candidates_temp
-        print(user.profile.ice_candidates, user.profile.ice_candidates_temp)
-        
+        user.profile.ice_candidates = user.profile.ice_candidates_temp        
         user.profile.save()
-        print(user.profile.ice_candidates, user.profile.ice_candidates_temp)
-        # return redirect('home')
         return render(request, 'chat/ice_activated.html', context={'user':user})
     else:
         return render(request, 'chat/main.html', context={'user':user})
@@ -194,7 +132,6 @@ def edit(request):
             print('success')
             user_form.save()
             profile_form.save()
-
         return render(request, 'chat/edit_done.html', {'new_user': new_user} )    
     else:
         user_form = UserEditForm(instance=request.user)
