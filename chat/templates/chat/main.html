@@ -14,10 +14,12 @@
 
 
 {% if request.is_secure %}
-{% endif %} 
-
-  {% if user.is_authenticated %}
-     <li>Пользователь: {{ user.get_username }}</li>
+{% endif %}
+{% if user.is_authenticated %}
+<li>Пользователь: {{ user.get_username }}</li>
+  {% if not user.social_auth.exists %}
+      <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">Совершить вход через Google</a>
+   {% endif %}   
    {% else %}
      <li><a href="{% url 'login'%}?next={{request.path}}">Логин</a></li>
    {% endif %} 
@@ -27,6 +29,13 @@
   
   {% endif %}
   <li><a href="{% url 'logout'%}?next={{request.path}}">Выход</a></li>
+  {% if user.is_authenticated %}
+  {% if not user.social_auth.exists %}
+  <p>Совершите вход через Google, чтобы получить доступ к видеочату</p>
+  {% else %}
+
+
+
   {% if user.profile.first == True and user.profile.is_ip_correct %} 
 <h3 id="label-room">Введите / сгенерируйте номер комнаты</h3>
 <div id = 'roomcheck-container'>
@@ -83,6 +92,9 @@
 
 
 {% endif %}
+{% endif %}
+{% endif %}
+
 <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
 </body>
 
