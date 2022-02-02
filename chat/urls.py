@@ -5,7 +5,9 @@ from .views import main_view, register, edit, login, activate, activate_ice
 urlpatterns = [
 	path('', main_view, name='main_view'),
 ]
-
+urlpatterns += [
+  path('', include('social_django.urls', namespace='social')),
+]
 urlpatterns += [
     path('accounts/login/', login, name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
