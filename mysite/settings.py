@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'channels',
     'chat',
     "django_extensions",
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -34,7 +35,13 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'mysite.urls'
-
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '991130092371-keasb2rrj4fjpcc333hkjs2e7tka7pl0.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -100,7 +107,8 @@ CHANNEL_LAYERS = {
     }
 }
 
-LOGIN_REDIRECT_URL = 'check_ip'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
