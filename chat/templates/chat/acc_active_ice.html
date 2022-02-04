@@ -1,4 +1,4 @@
 {% autoescape off %}
 Здравствуйте {{ user.username }},
-Чтобы обновить ваши данные и доказать, что логин производите именно вы, перейдите по ссылке,http://{{ domain }}{% url 'activate2' uidb64=uid token=token %}
+Чтобы обновить ваши данные и доказать, что логин производите именно вы, перейдите по ссылке,http://{{ domain }}{% url 'activate_ice' uidb64=uid token=token %}
 {% endautoescape %}
